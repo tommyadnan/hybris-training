@@ -1,0 +1,36 @@
+# -----------------------------------------------------------------------
+# Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+# -----------------------------------------------------------------------
+# ImpEx for Importing Products Stock Levels and Warehouses
+
+# Macros / Replacement Parameter definitions
+$productCatalog = trainingProductCatalog
+$productCatalogName = Training Product Catalog
+$vendor = training
+
+$catalogVersion = catalogversion(catalog(id[default=$productCatalog]), version[default='Staged'])[unique=true, default=$productCatalog:Staged]
+
+
+INSERT_UPDATE Vendor; code[unique = true]
+                    ; $vendor
+
+INSERT_UPDATE Warehouse; code[unique = true]; vendor(code); default[default = true]; baseStores(uid)
+                       ; warehouse_training ; $vendor     ;                        ; training
+
+INSERT_UPDATE StockLevel; available; warehouse(code)[unique = true]; inStockStatus(code); maxPreOrder; maxStockLevelHistoryCount; overSelling; preOrder; productCode[unique = true]; reserved
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; PB-SHIRT-1                ; 0
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; PB-SHIRT-2                ; 0
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; CV-S1                     ; 0
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; CV-S2                     ; 0
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; HURLEY-T-1                ; 0
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; HURLEY-T-2                ; 0
+                        ; 1000000  ; warehouse_training            ; forceInStock       ; 0          ; 0                        ; 0          ; 0       ; COLE-T-1                  ; 0
+
+UPDATE Product; code[unique = true]; $catalogVersion; stockLevels(productCode, warehouse(code)); vendors(code)
+              ; PB-SHIRT-1         ;                ; PB-SHIRT-1:warehouse_training            ; $vendor
+              ; PB-SHIRT-2         ;                ; PB-SHIRT-2:warehouse_training            ; $vendor
+              ; CV-S1              ;                ; CV-S1:warehouse_training                 ; $vendor
+              ; CV-S2              ;                ; CV-S2:warehouse_training                 ; $vendor
+              ; HURLEY-T-1         ;                ; HURLEY-T-1:warehouse_training            ; $vendor
+              ; HURLEY-T-2         ;                ; HURLEY-T-2:warehouse_training            ; $vendor
+              ; COLE-T-1           ;                ; COLE-T-1:warehouse_training              ; $vendor

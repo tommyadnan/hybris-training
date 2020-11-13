@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+-->
+<process xmlns="http://www.hybris.de/xsd/processdefinition"
+		 start="defaultTestAction" name="defaultTestAction"
+		processClass="de.hybris.platform.commerceservices.model.process.TestActionProcessModel">
+
+	<action id="defaultTestAction" bean="defaultTestAction">
+		<transition name="OK" to="defaultTestAction2"/>
+		<transition name="NOK" to="failed"/>
+	</action>
+
+	<action id="defaultTestAction2" bean="defaultTestAction2">
+		<transition name="OK" to="success"/>
+		<transition name="NOK" to="failed"/>
+	</action>
+
+<!--	define errpr,failed & success-->
+	<end id="error" state="ERROR">Something went wrong.</end>
+	<end id="failed" state="FAILED">Failed</end>
+	<end id="success" state="SUCCEEDED">Success</end>
+
+</process>

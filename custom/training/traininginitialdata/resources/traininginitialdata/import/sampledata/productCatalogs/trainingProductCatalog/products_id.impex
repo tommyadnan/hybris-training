@@ -1,0 +1,30 @@
+# -----------------------------------------------------------------------
+# Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+# -----------------------------------------------------------------------
+# ImpEx for Importing Product Localisations
+
+# Macros / Replacement Parameter definitions
+$productCatalog = trainingProductCatalog
+$productCatalogName = Training Product Catalog
+
+$catalogVersion = catalogversion(catalog(id[default=$productCatalog]), version[default='Staged'])[unique=true, default=$productCatalog:Staged]
+
+# Language
+$lang = id
+
+# Update allProducts with localisations
+UPDATE TrainingProduct; code[unique = true]; $catalogVersion; name[lang = $lang]; description[lang = $lang]
+                      ; PULLNBEAR          ;                ; Pull & Bear       ; Pull & Bear T-Shirt
+                      ; CONVERSE           ;                ; Converse          ; Converse T-Shirt
+                      ; HURLEY             ;                ; Hurley            ; Hurley T-Shirt
+                      ; COLE               ;                ; Cole              ; Cole Jeans
+
+
+UPDATE TrainingVariantProduct; code[unique = true]; name[lang = $lang]
+                             ; PB-SHIRT-1         ; Pull & Bear Shirt 1
+                             ; PB-SHIRT-2         ; Pull & Bear Shirt 2
+                             ; CV-S1              ; Converse Shirt 1
+                             ; CV-S2              ; Converse Shirt 2
+                             ; HURLEY-T-1         ; Hurley Shirt 1
+                             ; HURLEY-T-2         ; Hurley Shirt 2
+                             ; COLE-T-1           ; Cole Jeans 1

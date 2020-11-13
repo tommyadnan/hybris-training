@@ -1,0 +1,65 @@
+# -----------------------------------------------------------------------
+# Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+# -----------------------------------------------------------------------
+# ImPex for Importing Product Media
+
+# Macros / Replacement Parameter definitions
+$productCatalog = trainingProductCatalog
+
+$catalogVersion = catalogversion(catalog(id[default=$productCatalog]), version[default='Staged'])[unique=true, default=$productCatalog]
+$media = @media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator]
+$thumbnail = thumbnail(code, $catalogVersion)
+$picture = picture(code, $catalogVersion)
+$thumbnails = thumbnails(code, $catalogVersion)
+$detail = detail(code, $catalogVersion)
+$normal = normal(code, $catalogVersion)
+$others = others(code, $catalogVersion)
+$data_sheet = data_sheet(code, $catalogVersion)
+$medias = medias(code, $catalogVersion)
+$galleryImages = galleryImages(qualifier, $catalogVersion)
+$siteResource = jar:org.training.initialdata.setup.InitialDataSystemSetup&/traininginitialdata/import/sampledata/productCatalogs/$productCatalog
+
+# Create Media
+INSERT_UPDATE Media; mediaFormat(qualifier); code[unique = true]        ; $media                                  ; mime[default = 'image/jpeg']; $catalogVersion; folder(qualifier)
+                   ; 1200Wx1200H           ; media-converse-picture     ; $siteResource/images/product/sepatu.jpg ;                             ;                ; images ;
+                   ; 515Wx515H             ; media-converse-thumbnail   ; $siteResource/images/product/sepatu.jpg ;                             ;                ; images ;
+                   ; 300Wx300H             ; media-converse-detail      ; $siteResource/images/product/sepatu.jpg ;                             ;                ; images ;
+                   ; 96Wx96H               ; media-converse-other       ; $siteResource/images/product/sepatu.jpg ;                             ;                ; images ;
+                   ; 65Wx65H               ; media-converse-normal      ; $siteResource/images/product/sepatu.jpg ;                             ;                ; images ;
+                   ; 30Wx30H               ; media-converse-thumbnails  ; $siteResource/images/product/sepatu.jpg ;                             ;                ; images ;
+                   ; 1200Wx1200H           ; media-cole-picture         ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 515Wx515H             ; media-cole-thumbnail       ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 300Wx300H             ; media-cole-detail          ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 96Wx96H               ; media-cole-other           ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 65Wx65H               ; media-cole-normal          ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 30Wx30H               ; media-cole-thumbnails      ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 1200Wx1200H           ; media-pullnbear-picture    ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 515Wx515H             ; media-pullnbear-thumbnail  ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 300Wx300H             ; media-pullnbear-detail     ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 96Wx96H               ; media-pullnbear-other      ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 65Wx65H               ; media-pullnbear-normal     ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 30Wx30H               ; media-pullnbear-thumbnails ; $siteResource/images/product/baju.jpg   ;                             ;                ; images ;
+                   ; 1200Wx1200H           ; media-hurley-picture       ; $siteResource/images/product/jeans.jpg  ;                             ;                ; images ;
+                   ; 515Wx515H             ; media-hurley-thumbnail     ; $siteResource/images/product/jeans.jpg  ;                             ;                ; images ;
+                   ; 300Wx300H             ; media-hurley-detail        ; $siteResource/images/product/jeans.jpg  ;                             ;                ; images ;
+                   ; 96Wx96H               ; media-hurley-other         ; $siteResource/images/product/jeans.jpg  ;                             ;                ; images ;
+                   ; 65Wx65H               ; media-hurley-normal        ; $siteResource/images/product/jeans.jpg  ;                             ;                ; images ;
+                   ; 30Wx30H               ; media-hurley-thumbnails    ; $siteResource/images/product/jeans.jpg  ;                             ;                ; images ;
+
+
+# Create Media Containers
+INSERT_UPDATE MediaContainer; qualifier[unique = true]; $medias                                                                                                                                          ; $catalogVersion
+                            ; converse-media          ; media-converse-picture,media-converse-thumbnail,media-converse-detail,media-converse-other,media-converse-normal,media-converse-thumbnails       ;
+                            ; cole-media              ; media-cole-picture,media-cole-thumbnail,media-cole-detail,media-cole-other,media-cole-normal,media-cole-thumbnails                               ;
+                            ; hurley-media            ; media-hurley-picture,media-hurley-thumbnail,media-hurley-detail,media-hurley-other,media-hurley-normal,media-hurley-thumbnails                   ;
+                            ; pullnbear-media         ; media-pullnbear-picture,media-pullnbear-thumbnail,media-pullnbear-detail,media-pullnbear-other,media-pullnbear-normal,media-pullnbear-thumbnails ;
+
+# Update Products with Media and Media Containers
+UPDATE Product; code[unique = true]; $picture                ; $thumbnail                ; $detail                ; $others               ; $normal                ; $thumbnails                ; $galleryImages  ; $catalogVersion
+              ; CV-S1              ; media-converse-picture  ; media-converse-thumbnail  ; media-converse-detail  ; media-converse-other  ; media-converse-normal  ; media-converse-thumbnails  ; converse-media  ;
+              ; CV-S2              ; media-converse-picture  ; media-converse-thumbnail  ; media-converse-detail  ; media-converse-other  ; media-converse-normal  ; media-converse-thumbnails  ; converse-media  ;
+              ; PB-SHIRT-1         ; media-pullnbear-picture ; media-pullnbear-thumbnail ; media-pullnbear-detail ; media-pullnbear-other ; media-pullnbear-normal ; media-pullnbear-thumbnails ; pullnbear-media ;
+              ; PB-SHIRT-2         ; media-pullnbear-picture ; media-pullnbear-thumbnail ; media-pullnbear-detail ; media-pullnbear-other ; media-pullnbear-normal ; media-pullnbear-thumbnails ; pullnbear-media ;
+              ; HURLEY-T-1         ; media-hurley-picture    ; media-hurley-thumbnail    ; media-hurley-detail    ; media-hurley-other    ; media-hurley-normal    ; media-hurley-thumbnails    ; hurley-media    ;
+              ; HURLEY-T-2         ; media-hurley-picture    ; media-hurley-thumbnail    ; media-hurley-detail    ; media-hurley-other    ; media-hurley-normal    ; media-hurley-thumbnails    ; hurley-media    ;
+              ; COLE-T-1           ; media-cole-picture      ; media-cole-thumbnail      ; media-cole-detail      ; media-cole-other      ; media-cole-normal      ; media-cole-thumbnails      ; cole-media      ;

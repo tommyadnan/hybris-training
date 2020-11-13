@@ -1,0 +1,29 @@
+# -----------------------------------------------------------------------
+# Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+# -----------------------------------------------------------------------
+# ImpEx for Importing Products
+
+# Macros / Replacement Parameter definitions
+$productCatalog = trainingProductCatalog
+$productCatalogName = Training Product Catalog
+
+$catalogVersion = catalogversion(catalog(id[default=$productCatalog]), version[default='Staged'])[unique=true, default=$productCatalog:Staged]
+$supercategories = supercategories(code, $catalogVersion)
+$baseProduct = baseProduct(code, $catalogVersion)
+$approved = approvalstatus(code)[default='approved']
+
+# Insert Products
+INSERT_UPDATE TrainingProduct; code[unique = true]; name        ; $supercategories; varianttype(code)[default = 'TrainingVariantProduct']; $approved; unit(code)[default = pieces]; $catalogVersion
+                             ; PULLNBEAR          ; Pull & Bear ; "SHIRT"         ;                                                      ;          ;                             ;
+                             ; CONVERSE           ; Converse    ; "SHIRT"         ;                                                      ;          ;                             ;
+                             ; HURLEY             ; Hurley      ; "SHIRT"         ;                                                      ;          ;                             ;
+                             ; COLE               ; Cole        ; "TROUSER"       ;                                                      ;          ;                             ;
+
+INSERT_UPDATE TrainingVariantProduct; $baseProduct; code[unique = true]; sku  ; material; unit()[pieces]; $approved; $catalogVersion; $supercategories; description
+                                    ; PULLNBEAR   ; PB-SHIRT-1         ; PBT1 ; Cotton  ;               ;          ;                ; "SHIRT"         ;
+                                    ; PULLNBEAR   ; PB-SHIRT-2         ; PBT2 ; Cotton  ;               ;          ;                ; "SHIRT"         ; Pull & Bear T-Shirt
+                                    ; CONVERSE    ; CV-S1              ; CVS1 ; Cotton  ;               ;          ;                ; "SHIRT"         ;
+                                    ; CONVERSE    ; CV-S2              ; CVS2 ; Cotton  ;               ;          ;                ; "SHIRT"         ; Converse T-Shirt
+                                    ; HURLEY      ; HURLEY-T-1         ; HT1  ; Cotton  ;               ;          ;                ; "SHIRT"         ; Hurley T-Shirt
+                                    ; HURLEY      ; HURLEY-T-2         ; HT2  ; Cotton  ;               ;          ;                ; "SHIRT"         ; Hurley T-Shirt
+                                    ; COLE        ; COLE-T-1           ; COL1 ; Jeans   ;               ;          ;                ; "TROUSER"       ; Cole Jeans

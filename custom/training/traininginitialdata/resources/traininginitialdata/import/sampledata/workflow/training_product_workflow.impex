@@ -1,0 +1,47 @@
+INSERT_UPDATE UserGroup; UID[unique = true]; locname[lang = en]  ; backOfficeLoginDisabled; groups(uid)
+                       ; PA_OpsTeam        ; Ops Team User Group ; false                  ; employeegroup,backofficeworkflowadmingroup
+
+INSERT_UPDATE Employee; UID[unique = true]; name     ; groups(uid); password; backOfficeLoginDisabled[default = false];
+                      ; wfl_PA_ops        ; Ops Team ; PA_OpsTeam ; 1234    ;                                         ;
+
+INSERT_UPDATE WorkflowTemplate; code[unique = true]             ; name[lang = id]       ; name[lang = en]       ; owner(uid); description[lang = en]                               ; description[lang = id]; visibleForPrincipals(uid)
+                              ; Training_PA_ProductActiveStatus ; Product Active Status ; Product Active Status ; admin     ; "This workflow is for Change Product Active Status." ;                       ; wfl_PA_ops
+
+INSERT_UPDATE WorkflowActionTemplate; code[unique = true]           ; name[lang = id]                       ; name[lang = en]                       ; description[lang = id]; description[lang = en]; principalAssigned(uid); workflow(code)[unique = true]   ; sendEmail; emailAddress; rendererTemplate(code); actionType(code)
+                                    ; PA001_PA_Approval_For_Product ; Approval for Product Active Status    ; Approval for Product Active Status    ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; start
+                                    ; PA002_PA_Product_Finish       ; Finish Product Active Status Approval ; Finish Product Active Status Approval ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; normal
+                                    ; PA003_PA_Product_Retry        ; Retry Product Active Status Approval  ; Retry Product Active Status Approval  ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; normal
+                                    ; PA004_PA_Product_RetryUpdate  ; Retry Product Active Status HotUpdate ; Retry Product Active Status HotUpdate ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; normal
+                                    ; PA005_PA_Product_End          ; End of Product Active Status Approval ; End of Product Active Status Approval ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; end
+
+INSERT_UPDATE AutomatedWorkflowActionTemplate; code[unique = true]  ; name[lang = id]            ; name[lang = en]            ; description[lang = id]; description[lang = en]; principalAssigned(uid); workflow(code)[unique = true]   ; sendEmail; emailAddress; rendererTemplate(code); actionType(code); jobHandler
+                                             ; PA_Product_Approved  ; Training Product Approved  ; Training Product Approved  ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; normal          ; trainingProductActiveStatusApprovalActionJob
+                                             ; PA_Product_Rejected  ; Training Product Rejected  ; Training Product Rejected  ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; normal          ; trainingProductActiveStatusRejectionActionJob
+                                             ; PA_Product_HotUpdate ; Training Product HotUpdate ; Training Product HotUpdate ;                       ;                       ; PA_OpsTeam            ; Training_PA_ProductActiveStatus ; false    ;             ;                       ; normal          ; trainingProductActiveStatusHotUpdateActionJob
+
+
+INSERT_UPDATE WorkflowDecisionTemplate; code[unique = true]    ; name[lang = id]; name[lang = en]; actionTemplate(code)          ; description[allownull = true]
+                                      ; DAA001_PA_Approved     ; Approved!      ; Approved!      ; PA001_PA_Approval_For_Product ; Decision taken by Ops Team
+                                      ; DAA002_PA_Rejected     ; Rejected!      ; Rejected!      ; PA001_PA_Approval_For_Product ; Decision taken by Ops Team
+                                      ; DAA003_PA_Finish       ; Done!          ; Done!          ; PA002_PA_Product_Finish       ; Decision taken by Ops Team
+                                      ; DAA004_PA_Retry        ; Retry!         ; Retry!         ; PA003_PA_Product_Retry        ; Decision taken by Ops Team
+                                      ; DAA005_PA_Retry        ; Retry!         ; Retry!         ; PA004_PA_Product_RetryUpdate  ; Decision taken by Ops Team
+                                      ; DTDA001_PA_AutoApprove ; Finish!        ; Finish!        ; PA_Product_Approved           ;
+                                      ; DTDA002_PA_AutoReject  ; Finish!        ; Finish!        ; PA_Product_Rejected           ;
+                                      ; DTDA004_PA_HotUpdate   ; Finish!        ; Finish!        ; PA_Product_HotUpdate          ;
+                                      ; DTDA006_PA_HotUpdate   ; Retry!         ; Retry!         ; PA_Product_HotUpdate          ;
+
+# new Workflow Model;;;;;;;;;;;
+INSERT_UPDATE WorkflowActionTemplateLinkTemplateRelation; source(code)[unique = true]; target(code)[unique = true]  ; andConnectionTemplate; qualifier
+                                                        ; DAA001_PA_Approved         ; PA_Product_Approved          ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DAA002_PA_Rejected         ; PA_Product_Rejected          ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DTDA001_PA_AutoApprove     ; PA_Product_HotUpdate         ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DTDA004_PA_HotUpdate       ; PA005_PA_Product_End         ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DTDA002_PA_AutoReject      ; PA005_PA_Product_End         ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DAA003_PA_Finish           ; PA005_PA_Product_End         ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DAA004_PA_Retry            ; PA_Product_HotUpdate         ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DTDA006_PA_HotUpdate       ; PA004_PA_Product_RetryUpdate ; false                ; WorkflowActionTemplateLinkTemplateRelation
+                                                        ; DAA005_PA_Retry            ; PA_Product_HotUpdate         ; false                ; WorkflowActionTemplateLinkTemplateRelation
+
+
+
