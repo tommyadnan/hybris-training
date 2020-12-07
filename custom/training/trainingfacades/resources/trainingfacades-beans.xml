@@ -18,4 +18,12 @@
 	<enum class="de.hybris.platform.commercefacades.product.ProductOption">
 		<value>PRODUCT_SKU</value>
 	</enum>
+
+	<bean class="de.hybris.platform.commercefacades.user.data.RegisterData">
+		<property name="id" type="String"/>
+	</bean>
+
+	<bean class="de.hybris.platform.commercefacades.user.data.CustomerData">
+		<property name="id" type="String"/>
+	</bean>
 </beans>

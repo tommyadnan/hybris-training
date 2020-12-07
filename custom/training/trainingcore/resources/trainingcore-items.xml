@@ -114,7 +114,7 @@
             <itemtype code="TrainingProduct" autocreate="true" generate="true" extends="Product">
                 <attributes>
                     <attribute qualifier="searchable" type="java.lang.Boolean">
-                        <description>Is searchable Products</description>
+                        <description>Is searchable Product</description>
                         <modifiers/>
                         <defaultvalue>Boolean.valueOf(true)</defaultvalue>
                         <persistence type="property" />
@@ -152,7 +152,17 @@
                 </attributes>
             </itemtype>
         </typegroup>
-        
+
+        <typegroup>
+            <itemtype code="Customer" generate="false" autocreate="false">
+                <attributes>
+                    <attribute qualifier="id" type="java.lang.String">
+                        <modifiers/>
+                        <persistence type="property"/>
+                    </attribute>
+                </attributes>
+            </itemtype>
+        </typegroup>
 
     </itemtypes>
 </items>
